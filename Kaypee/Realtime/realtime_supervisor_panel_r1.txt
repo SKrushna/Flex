@@ -1,0 +1,194 @@
+{{#if finalData}}
+
+<PlantWorksCard class="m-0 flex shadow-0" as |Card|>
+	<Card.Header @class="p-0" as |Header|>
+		<Header.Text as |Text|>
+			<Text.Title>
+				Supervisor Panel
+			</Text.Title>
+		</Header.Text>
+	</Card.Header>
+</PlantWorksCard>
+<PlantWorksTable @class="layout-column" as |Table|>
+
+	{{#each finalData as |line indexl|}}
+	{{#if (eq line.accessStatus true)}}
+    <Table.Body as |Body|>
+        <Body.Row @onClick={{action "controller-action" "lnfunc" indexl}} as |Row|>
+            <Row.Cell>
+                {{#if (eq line.displayStatus true)}}
+                <PlantWorksIcon @icon="keyboard_arrow_up" />
+                {{else}}
+                <PlantWorksIcon @icon="keyboard_arrow_down" />
+                {{/if}}
+                  {{line.name}}
+            </Row.Cell>
+        </Body.Row>
+    </Table.Body>
+	{{/if}}
+
+    {{#if (eq line.displayStatus true)}}
+	{{#each line.machines as |machine indexm|}}
+    <PlantWorksCard @class="m-0" as |Card|>
+
+    <PlantWorksTable as |Table|>
+        <Table.Body as |Body|>
+             <Body.Row as |Row|>
+				<Row.Cell @class="text-left"> <strong>Machine Name</strong> <span>: {{machine.name}}</span> </Row.Cell>
+                <Row.Cell @class="text-left text-capitalize"> <strong>Operator</strong> <span>: {{ machine.operator }}</span> </Row.Cell>
+                <Row.Cell>  </Row.Cell>
+                 {{#if machine.downtimeSince}}
+                     <Row.Cell @class="label pull-right bg-red p-1 mx-2 text-white text-center"> <strong>Machine Down Since : {{machine.downtimeSince}}</strong> </Row.Cell>
+                {{else}}
+                    <Row.Cell @class="label pull-right bg-green p-1 mx-2 text-white text-center"> <strong>Machine is Running </strong> </Row.Cell>
+                {{/if}}
+             </Body.Row>
+
+             {{#if (eq machine.workOrderIsRunning true)}}
+             <Body.Row as |Row|>
+				<Row.Cell @class="text-left"> <strong>Work Order Number</strong> <span>: {{ machine.wo_id }} </span> </Row.Cell>
+                <Row.Cell @class="text-left"> <strong>Item Code</strong> <span>: {{ machine.ITEM_ID }} </span> </Row.Cell>
+                <Row.Cell> <strong>Target Speed</strong> <span>: {{ machine.STANDARD_SPEED }} </span> </Row.Cell>
+                <Row.Cell @class="text-center"> <strong>Product Name</strong> <span>: {{ machine.ITEM_NAME }} </span> </Row.Cell>
+             </Body.Row>
+             {{/if}}
+        </Table.Body>
+    </PlantWorksTable>
+
+    </PlantWorksCard>
+
+    <PlantWorksCard @class="m-0 mt-2 bg-grey">
+		<div class="layout-row">
+			{{#if (eq machine.workOrderIsRunning true)}}
+			<div class="flex-32 text-center ml-1 m-1 p-1 shadow-2 bg-white">
+			{{!--<PlantWorksCard @class="m-0 shadow-2 mt-2">--}}
+						<div class="layout-row m-2">
+							<div class="flex-50">
+								<small>Work Order Start time</small>
+								<h5>{{machine.WOStartTime}}</h5> <h3>{{machine.WOStartHour}}</h3>
+							</div>
+							<div class="flex-50">
+								<small>Expected Work Order End Time</small>
+								<h5>{{machine.WOExpectedCompleteTime}}</h5> <h3>{{machine.WOExpectedCompleteHour}}</h3>
+							</div>
+						</div>
+						<div class="layout-row m-2">
+							<div class="flex-50">
+								<small>Actual Meter</small>
+								<h3>{{ machine.actual_meter }}</h3>
+							</div>
+							<div class="flex-50">
+								<small>Order Complete</small>
+								<h3>{{ machine.WOComplete }} % </h3>
+							</div>
+						</div>
+			{{!--</PlantWorksCard>--}}
+			</div>
+			{{else}}
+				<div class="flex-30 text-center m-1 p-5 shadow-2 bg-white">
+					<h3 class="mb-2 text-muted bg-white">No running Work Order</h3>
+				</div>
+			{{/if}}
+			{{!--<div class="flex-70">
+				<PlantWorksCard @class="m-1 p-1 shadow-2">--}}
+							<div class="flex-70 m-1 p-1 bg-white" id='actual-vs-planned-speed-graph-line-{{indexl}}-machine-{{indexm}}' onClick={{perform showGraphModal 'Planned vs Actual Speed' machine.name}}></div>
+				{{!--</PlantWorksCard>
+			</div>--}}
+		</div>
+
+		<div class="layout-row ">
+			
+			{{#if (eq machine.workOrderIsRunning true)}}
+			<div class="flex-30 text-center m-1 p-1 shadow-2 bg-white">
+				{{!--<PlantWorksCard @class="m-2 mt-2 shadow-2">--}}
+						<div class="layout-row m-2">
+							<div class="flex-50">
+								<small>Setup Time</small>
+								<h3>{{ machine.setupTime }} Mins</h3>
+							</div>
+							<div class="flex-50">
+								<small>Speed</small>
+								<h3>{{ machine.machineSpeed }}</h3>
+							</div>
+						</div>
+						<div class="layout-row m-2">
+							<div class="flex-50">
+								<small>Total Work Order Runtime</small>
+								<h3>{{ machine.WOTotalRuntime }} Mins</h3>
+							</div>
+							<div class="flex-50">
+								<small>Total Downtime</small>
+								<h3>{{ machine.totalDowntime }} Mins</h3>
+							</div>
+						</div>
+				{{!--</PlantWorksCard>--}}
+			</div>
+			{{else}}
+			<div class="flex-30 text-center m-1 p-1 shadow-2 bg-white">
+				<h3 class="mb-2 text-muted bg-white">No Work Order Details</h3>
+			</div>
+			{{/if}}
+
+			<div class="flex-30 text-center m-1 p-1 shadow-2 bg-white">
+				{{!--<PlantWorksCard @class="m-2 p-2">--}}
+					
+						<div class="text-center">
+							<div class="flex-100"> <b> Time Distribution </b> </div>
+							<div id="downtime-graph-line-{{indexl}}-machine-{{indexm}}" onClick={{perform showDowntimeModal 'Time Distribution' indexl indexm}}> </div>
+							<div class="layout-row text-left ml-2">
+								<div class="flex-50"> <small><FaIcon @icon='circle' style="color : blue" /> <strong> Planned: </strong> <span>{{machine.plannedInDigit}}</span> </small></div>
+								<div class="flex-50"> <small> <FaIcon @icon='circle' style="color : red" /> <strong>Unplanned:</strong> <span>{{machine.unplannedInDigit}}</span></small></div>
+							</div>
+							<div class="layout-row text-left ml-2">
+								<div class="flex-50"> <small><FaIcon @icon='circle' style="color : orange" /> <strong> Setuptime:</strong> <span>{{machine.setupInDigit}}</span> </small></div>
+								<div class="flex-50"> <small><FaIcon @icon='circle' style="color : green" /> <strong> Runtime: </strong> <span>{{machine.runtimeInDigit}}</span> </small></div>
+							</div>
+							<div class="text-center">
+								<div> <small><FaIcon @icon='circle' style="color : yellow" /> <strong> Idletime: </strong> <span>{{machine.idleInDigit}}</span> </small></div>
+							</div>
+						</div>
+					
+				{{!--</PlantWorksCard>--}}
+			</div>
+
+			<div class="flex-40 text-center m-1 p-1 shadow-2 bg-white" id="downtime-reasons-graph-line-{{indexl}}-machine-{{indexm}}" onClick={{perform showTopThreeModal 'Top Three Unplanned Downtime Reasons' indexl indexm}}></div>
+
+			{{!--<div class="flex-70 pl-2 ml-2">
+					<div class="layout-row flex">
+					<div class="flex-45 text-center">
+						<PlantWorksCard @class="m-2 p-2 shadow-2">
+							
+								<div class="text-center">
+									<div class="p-2 flex-70 ml-1"> <b> Time Distribution </b> </div>
+									<div id="downtime-graph-line-{{indexl}}-machine-{{indexm}}" onClick={{perform showDowntimeModal 'Time Distribution' indexl indexm}}> </div>
+									<div class="layout-row text-left ml-2">
+										<div class="flex-50"> <small><FaIcon @icon='circle' style="color : blue" /> <strong> Planned: </strong> <span>{{machine.plannedInDigit}}</span> </small></div>
+										<div class="flex-50"> <small> <FaIcon @icon='circle' style="color : red" /> <strong>Unplanned:</strong> <span>{{machine.unplannedInDigit}}</span></small></div>
+									</div>
+									<div class="layout-row text-left ml-2">
+										<div class="flex-50"> <small><FaIcon @icon='circle' style="color : orange" /> <strong> Setuptime:</strong> <span>{{machine.setupInDigit}}</span> </small></div>
+										<div class="flex-50"> <small><FaIcon @icon='circle' style="color : green" /> <strong> Runtime: </strong> <span>{{machine.runtimeInDigit}}</span> </small></div>
+									</div>
+									<div class="text-center">
+										<div> <small><FaIcon @icon='circle' style="color : yellow" /> <strong> Idletime: </strong> <span>{{machine.idleInDigit}}</span> </small></div>
+									</div>
+								</div>
+							
+						</PlantWorksCard>
+					</div>
+					<div class="flex-55 text-center">
+						<PlantWorksCard @class="m-2 p-2 shadow-2">
+								<div class="mt-2 md-2 p-1 pl-2 ml-1" id="downtime-reasons-graph-line-{{indexl}}-machine-{{indexm}}" onClick={{perform showTopThreeModal 'Top Three Unplanned Downtime Reasons' indexl indexm}}></div>
+							
+						</PlantWorksCard>
+					</div>
+					</div>
+			</div>--}}
+		</div>
+
+    </PlantWorksCard>
+	{{/each}}
+    {{/if}}
+	{{/each}}
+</PlantWorksTable>
+{{/if}}

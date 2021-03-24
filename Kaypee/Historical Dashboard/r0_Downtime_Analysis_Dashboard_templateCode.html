@@ -1,0 +1,20 @@
+
+	<style>
+	canvas {
+		width:100%
+	}
+	</style>
+	{{#if destroy}}
+	<PlantWorksCard class="flex shadow-0" as |Card|>
+		<Card.Content @class="p-0 flex layout-row" style="width:100%;height:100%;">
+			<div style="position:relative; display:inline-block; width:100%">
+			{{#if resultData.waterfallChartData}}
+				<div id="adani-waterfall-report" class="w-100"></div>
+			{{else}}
+				<div id="adani-downtime-report" style="width:100%;"></div>
+			{{/if}}
+			</div>
+		</Card.Content>
+	</PlantWorksCard>
+	{{/if}}
+	

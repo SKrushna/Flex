@@ -1,0 +1,190 @@
+{{!-- Input Component --}}
+
+	<PlantWorksCard class="flex shadow-0" as |Card|>
+	<Card.Header @class="p-0" as |Header|>
+		<Header.Text as |Text|>
+			<Text.Title>
+				Downtime Dashboard
+			</Text.Title>
+		</Header.Text>
+	</Card.Header>
+	</PlantWorksCard>
+
+<PlantWorksCard class="flex shadow-0 bg-grey m-1 p-1" as |Card|>
+	<PlantWorksExpansionPanel @class="md-close bg-white" @expanded={{status}} as |Selection|>
+	<Selection.Collapsed>
+		<div class="md-panel-title bg-white">
+			Show Selection
+		</div>
+		<div class="text-left layout-row bg-white">
+				Unit Name:{{chosenUnit.name}}&nbsp;/
+				Dashboard Type: {{chosenDisplay.name}}&nbsp;/&nbsp;Dashboard Duration: {{chosenDuration.name}}&nbsp;/&nbsp;
+			{{#if monthlySelection}}
+				Month: {{chosenMonth.name}}&nbsp;/&nbsp;Year: {{chosenYear}}&nbsp;/&nbsp;
+			{{else if dateRangeSelection}}
+				Start Date: {{dashboardStartDate}}&nbsp;/&nbsp;End Date: {{dashboardEndDate}}&nbsp;/&nbsp;
+			{{/if}}
+				Shift: {{chosenShift.name}}
+			</div>
+			<div class="md-panel-summary">&nbsp;</div>
+			<PlantWorksIcon @icon="edit" />
+	</Selection.Collapsed>
+
+	<Selection.Expanded as |Expanded|>
+		<Expanded.Header>
+			<div class="md-panel-title bg-white">
+				Hide Selection
+			</div>
+			<div class="md-panel-summary">&nbsp;</div>
+			<PlantWorksIcon @icon="keyboard_arrow_up" />
+		</Expanded.Header>
+
+		<Expanded.Content @class="m-0 p-0 layout-column layout-align-space-between md-close bg-white">
+
+			<div class="layout-row bg-white">
+				<div class="pl-3 pt-3 layout-column layout-align-center-top flex-10">
+					<PlantWorksSelect
+						@options={{plants}}
+						@selected={{chosenPlant}}
+						@label="Plants"
+						@onChange={{action (mut chosenPlant)}}
+						as |category|>
+						{{category.name}}
+					</PlantWorksSelect>
+				</div>
+
+				<div class="pl-3 pt-3 layout-column layout-align-center-top flex-10">
+					<PlantWorksSelect
+						@options={{units}}
+						@selected={{chosenUnit}}
+						@label="Units"
+						@onChange={{action (mut chosenUnit)}}
+						as |category|>
+						{{category.name}}
+					</PlantWorksSelect>
+				</div>
+
+				<div class="pl-3 pt-3 layout-column layout-align-center-top flex-10">
+					<PlantWorksSelect
+						@options={{displayType}}
+						@selected={{chosenDisplay}}
+						@label="Display Type"
+						@onChange={{action (mut chosenDisplay)}}
+						as |category|
+					>
+						{{category.name}}
+					</PlantWorksSelect>
+				</div>
+
+				<div class="pl-3 pt-3 layout-column layout-align-center-top flex-15">
+					<PlantWorksSelect
+						@options={{durationList}}
+						@selected={{chosenDuration}}
+						@label="Dashboard Duration"
+						@onChange={{action (mut chosenDuration)}}
+						as |category|
+					>
+					{{category.name}}
+					</PlantWorksSelect>
+				</div>
+				{{#if monthlySelection}}
+					<div class="pl-3 pt-3 layout-column layout-align-center-top">
+						<PlantWorksSelect
+							@options={{yearList}}
+							@selected={{chosenYear}}
+							@label="Year"
+							@onChange={{action (mut chosenYear)}}
+							as |category|
+						>
+						{{category}}
+						</PlantWorksSelect>
+					</div>
+
+					<div class="pl-3 pt-3 layout-column layout-align-center-top">
+						<PlantWorksSelect
+							@options={{monthList}}
+							@selected={{chosenMonth}}
+							@label="Month"
+							@onChange={{action (mut chosenMonth)}}
+							as |category|
+						>
+						{{category.name}}
+						</PlantWorksSelect>
+					</div>
+				{{else if dateRangeSelection}}
+					<div class="pl-3 pt-3 layout-column layout-align-center-top">
+						<PlantWorksDatePicker
+							@value={{moment-format dashboardStartDate "DD-MMM-YYYY"}}
+							@onChange={{action (mut dashboardStartDate)}}
+							@maxDate={{currentDate}}
+							@label="Start Date"
+						>
+						</PlantWorksDatePicker>
+					</div>
+
+					<div class="pl-3 pt-3 layout-column layout-align-center-top">
+						<PlantWorksDatePicker
+							@value={{moment-format dashboardEndDate "DD-MMM-YYYY"}}
+							@onChange={{action (mut dashboardEndDate)}}
+							@maxDate={{currentDate}}
+							@label="End Date"
+						>
+						</PlantWorksDatePicker>
+					</div>
+				{{/if}}
+
+				<div class="px-3 pt-3 layout-column layout-align-center-top">
+					<PlantWorksSelect
+						@options={{shifts}}
+						@selected={{chosenShift}}
+						@label="Shift"
+						@onChange={{action (mut chosenShift)}}
+						as |category|
+					>
+						{{category.name}}
+					</PlantWorksSelect>
+				</div>
+			</div>
+
+			<div class="px-3 layout-row bg-white">
+				{{#if displaySelectionLine}}
+					{{#each lineIds as |line|}}
+						<PlantWorksCheckbox @onChange={{action "controller-action" "singleStatus" line}} @value={{line.status}} @label={{line.name}}/>&nbsp;
+					{{/each}}
+				{{else if displaySelectionMachine}}
+					{{#each machineIds as |machine|}}
+						<PlantWorksCheckbox @onChange={{action "controller-action" "singleStatusMachines" machine}} @value={{machine.status}} @label={{machine.name}}/>&nbsp;
+					{{/each}}
+				{{/if}}
+			</div>
+
+			<div class="layout-row layout-align-end-center">
+				<div class="layout-column">
+					<PlantWorksButton @bubbles={{false}} @raised={{true}} @primary={{true}} @onClick={{action "controller-action" "checkData"}}>
+						Generate
+					</PlantWorksButton>
+				</div>
+			</div>
+
+		</Expanded.Content>
+	</Selection.Expanded>
+	</PlantWorksExpansionPanel>
+</PlantWorksCard>
+	<div class="layout-row bg-grey m-1 p-1">
+	<div class="layout-column bg-white">
+	<PlantWorksButton @primary={{chartColorW}} @warn={{false}} @raised={{chartColorW}} @onClick={{action "controller-action" "submitData" "waterfall"}} @bubbles={{false}} class="md-white" >
+			Waterfall Chart
+	</PlantWorksButton>
+	</div>
+	<div class="layout-column bg-white">
+	<PlantWorksButton @primary={{chartColorC}} @warn={{false}} @raised={{chartColorC}} @onClick={{action "controller-action" "submitData" "column"}} @bubbles={{false}} class="md-white">
+			Column Chart
+	</PlantWorksButton>
+	</div>
+	<div class="layout-column bg-white">
+	<PlantWorksButton @primary={{chartColorS}} @warn={{false}} @raised={{chartColorS}} @onClick={{action "controller-action" "submitData" "stackedColumn"}} @bubbles={{false}} class="md-white">
+			Stack Column Chart
+	</PlantWorksButton>
+	</div>
+	</div>
+	
