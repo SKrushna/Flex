@@ -1,5 +1,6 @@
 {{!-- Input Component --}}
 
+	
 	<PlantWorksCard class="flex shadow-0" as |Card|>
 	<Card.Header @class="p-0" as |Header|>
 		<Header.Text as |Text|>
@@ -10,7 +11,6 @@
 	</Card.Header>
 	</PlantWorksCard>
 
-<PlantWorksCard class="flex shadow-0 bg-grey m-1 p-1" as |Card|>
 	<PlantWorksExpansionPanel @class="md-close bg-white" @expanded={{status}} as |Selection|>
 	<Selection.Collapsed>
 		<div class="md-panel-title bg-white">
@@ -169,22 +169,22 @@
 		</Expanded.Content>
 	</Selection.Expanded>
 	</PlantWorksExpansionPanel>
-</PlantWorksCard>
+
 	<div class="layout-row bg-grey m-1 p-1">
-	<div class="layout-column bg-white">
-	<PlantWorksButton @primary={{chartColorW}} @warn={{false}} @raised={{chartColorW}} @onClick={{action "controller-action" "submitData" "waterfall"}} @bubbles={{false}} class="md-white" >
-			Waterfall Chart
-	</PlantWorksButton>
-	</div>
-	<div class="layout-column bg-white">
-	<PlantWorksButton @primary={{chartColorC}} @warn={{false}} @raised={{chartColorC}} @onClick={{action "controller-action" "submitData" "column"}} @bubbles={{false}} class="md-white">
-			Column Chart
-	</PlantWorksButton>
-	</div>
-	<div class="layout-column bg-white">
-	<PlantWorksButton @primary={{chartColorS}} @warn={{false}} @raised={{chartColorS}} @onClick={{action "controller-action" "submitData" "stackedColumn"}} @bubbles={{false}} class="md-white">
-			Stack Column Chart
-	</PlantWorksButton>
-	</div>
+	  <div class="layout-column bg-white layout-fill mr-1">
+		<PlantWorksButton @primary={{chartColorW}} @warn={{false}} @raised={{chartColorW}} @onClick={{action "controller-action" "submitData" "waterfall"}} @bubbles={{false}} class="md-white" >
+				Waterfall Chart
+		</PlantWorksButton>
+	  </div>
+	  <div class="layout-column bg-white layout-fill mr-1">
+		<PlantWorksButton @primary={{chartColorC}} @warn={{false}} @raised={{chartColorC}} @onClick={{action "controller-action" "submitData" "column"}} @bubbles={{false}} class="md-white">
+				Column Chart
+		</PlantWorksButton>
+	  </div>
+	  <div class="layout-column bg-white layout-fill">
+		<PlantWorksButton @primary={{chartColorS}} @warn={{false}} @raised={{chartColorS}} @onClick={{action "controller-action" "submitData" "stackedColumn"}} @bubbles={{false}} class="md-white">
+				Stack Column Chart
+		</PlantWorksButton>
+	  </div>
 	</div>
 	
